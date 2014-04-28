@@ -1,0 +1,57 @@
+\name{m2}
+\alias{m2}
+\title{Evaluate Macaulay2 code}
+\usage{
+m2(code, dir = tempdir(), opts = "--script")
+}
+\arguments{
+  \item{code}{Macaulay2 code as either a character string
+  or function; see examples}
+
+  \item{dir}{directory to place the files in}
+
+  \item{opts}{options for m2}
+}
+\value{
+an object of class m2
+}
+\description{
+Evaluate Macaulay2 code
+}
+\examples{
+\dontrun{
+
+options(digits = 20)
+13^20
+m2("13^20") # correct answer
+m2("toRR(20,(19004963774880800571392-13^20)/13^20)")
+options(digits = 7)
+
+code <- "
+1+1
+2+3
+100!
+R = QQ[x,y,z]
+(x+y)^10
+curve = ideal( x^4-y^5, x^3-y^7 )
+gens gb curve
+m = matrix {{x^2, x^2-y^2, x*y*z^7 }}
+image m
+R = QQ[a..d]
+I = ideal(a^3-b^2*c, b*c^2-c*d^2, c^3)
+G = gens gb I
+G
+"
+m2(code)
+
+
+code <- "
+R = QQ[x,y,z,t]
+I = ideal( t^4 - x, t^3 - y, t^2 - z)
+gens gb I
+"
+m2(code)
+
+}
+}
+

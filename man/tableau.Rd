@@ -1,0 +1,60 @@
+\name{tableau}
+\alias{tableau}
+\title{Compute a tableau for a markov move}
+\usage{
+tableau(move, dim)
+}
+\arguments{
+  \item{move}{a markov move matrix, where the columns are
+  moves in vector form (e.g. the output of markov)}
+
+  \item{dim}{the dimensions of the table form of the move,
+  oftentimes a vector of the number of levels of each
+  variable in order}
+}
+\value{
+an object of class tableau
+}
+\description{
+Compute a tableau for a markov move
+}
+\details{
+See LAS, p. 13
+}
+\examples{
+\dontrun{
+
+# 2x2 independence example
+# following convention, the first index indicates rows
+varlvls <- c(2,2)
+facets <- list(1,2)
+( A <- hmat(varlvls, facets) )
+markov(A)
+markov(A, "vec")
+markov(A, "tab", varlvls)
+markov(A, "tab", varlvls, TRUE)
+tableau(markov(A), varlvls)
+
+
+
+
+
+
+# LAS example 1.2.12, p.17  (no 3-way interaction)
+varlvls <- c(2,2,2)
+facets <- list(c(1,2), c(1,3), c(2,3))
+( A <- hmat(varlvls, facets) )
+markov(A)
+
+
+
+
+
+}
+}
+\references{
+Drton, M., B. Sturmfels, and S. Sullivant (2009).
+\emph{Lectures on Algebraic Statistics}, Basel: Birkhauser
+Verlag AG.
+}
+

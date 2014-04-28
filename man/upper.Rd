@@ -1,0 +1,25 @@
+\name{upper}
+\alias{upper}
+\title{Create an upper triangular matrix}
+\usage{
+upper(x)
+}
+\arguments{
+  \item{x}{a vector}
+}
+\value{
+...
+}
+\description{
+Create an upper triangular matrix
+}
+\examples{
+upper(1:3)
+lower(1:3)
+
+upper(1:6)
+lower(1:6)
+
+upper(rnorm(6))
+}
+
