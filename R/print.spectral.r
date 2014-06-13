@@ -1,4 +1,4 @@
-#' Pretty printing of spectral's output.
+#' Pretty Printing of Spectral's Output
 #'
 #' Pretty printing of spectral's output.
 #' 

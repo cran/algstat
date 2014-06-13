@@ -1,6 +1,6 @@
-#' Compute a variety
+#' Compute a Variety
 #'
-#' Compute a variety
+#' The variety of a collection of multivariate polynomials is the collection of points at which those polynomials are (simultaneously) equal to 0.  \code{variety} uses Bertini to find this set.
 #' 
 #' @param mpolyList Bertini code as either a character string or function; see examples
 #' @param varOrder variable order (see examples)

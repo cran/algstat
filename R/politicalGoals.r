@@ -1,4 +1,4 @@
-#' Relative rankings of importance of four political goals.
+#' Relative Rankings of Importance of Four Political Goals
 #' 
 #' 2262 Germans were asked to rank the following in order of importance : (1) maintain order in the nation, "order"; (2) give people more say in decisions in the government, "say"; (3) fight rising prices, "prices"; and (4) protect freedom of speech, "freedom".
 #'

@@ -1,6 +1,6 @@
-#' Use of alcohol, cigarettes, and marijuana in high school students
+#' Use of Alcohol, Cigarettes, and Marijuana by High School Students
 #' 
-#' Use of alcohol, cigarettes, and marijuana in high school students
+#' A multi-way contingency table of alcohol, cigarettes, and marijuana use by high school students.
 #'
 #' @name drugs
 #' @docType data

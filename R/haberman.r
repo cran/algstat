@@ -1,6 +1,6 @@
-#' Haberman's positive margin no three-way interaction MLE
+#' Haberman's Positive Margin no Three-way Interaction MLE
 #' 
-#' Haberman's positive margin no three-way interaction MLE
+#' Haberman's example of a log-linear model (the no-three way interaction model) that lacks an MLE even though it has positive margins.
 #'
 #' @name haberman
 #' @docType data

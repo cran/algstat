@@ -1,6 +1,6 @@
-#' Summarize Bertini output.
+#' Summarize Bertini Output
 #'
-#' Summarize Bertini output.
+#' This function summarizes the output from Bertini.
 #' 
 #' @param object an object of class bertini
 #' @param ... additional parameters

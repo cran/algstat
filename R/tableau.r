@@ -1,8 +1,6 @@
-#' Compute a tableau for a markov move
+#' Tableau Notation for Markov
 #'
-#' Compute a tableau for a markov move
-#'
-#' See LAS, p. 13
+#' Print the tableau notation for a Markov move.  See the reference provided, p. 13.
 #' 
 #' @param move a markov move matrix, where the columns are moves in vector form (e.g. the output of markov)
 #' @param dim the dimensions of the table form of the move, oftentimes a vector of the number of levels of each variable in order

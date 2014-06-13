@@ -1,6 +1,6 @@
-#' Evaluate Bertini code
+#' Evaluate Bertini Code
 #'
-#' Evaluate Bertini code
+#' Write a Bertini file, evaluate it through a back-end connection to Bertini, and bring the output back into R.
 #' 
 #' @param code Bertini code as either a character string or function; see examples
 #' @param dir directory to place the files in, without an ending /

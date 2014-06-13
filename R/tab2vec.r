@@ -1,8 +1,8 @@
-#' Convert a contingency table into a vector
+#' Array to Vector conversion
 #'
-#' Convert a contingency table into a vector
+#' Convert an array into a vector.
 #'
-#' Convert a contingency table into a vector.  The ordering of the cells is lexicographical.
+#' This function converts an array (or a multi-way contingency table) into a vector, using a consistent ordering of the cells.  The ordering of the cells is lexicographical and cannot be specified by the user.
 #' 
 #' @param tab an array of counts
 #' @return a named integer vector.  the names correspond to the cell indices in the table.
@@ -10,6 +10,9 @@
 #' @seealso \code{\link{vec2tab}}
 #' @examples
 #' 
+#' a <- array(1:24, c(2,3,4))
+#' tab2vec(a)
+#'
 #' data(Titanic)
 #' tab2vec(Titanic)
 #' Titanic[1,1,1,1]
@@ -33,17 +36,17 @@ tab2vec <- function(tab){
 
 
 
-#' Convert a vector into an array
+#' Vector to Array conversion
 #'
-#' Convert a vector into an array
+#' Convert a vector into an array given a set of dimensions; it therefore simply wraps \code{aperm} and \code{array}.
 #'
-#' Convert a vector into an array.  This is the reverse operation of tab2vec
+#' This function converts an array (or a multi-way contingency table) into a vector, using a consistent ordering of the cells.  The ordering of the cells is lexicographical and cannot be specified by the user.
 #' 
 #' @param vec a vector
 #' @param dim the desired array dimensions, oftentimes a vector of the number of levels of each variable in order
 #' @return an array
 #' @export vec2tab
-#' @seealso \code{\link{tab2vec}}
+#' @seealso \code{\link{tab2vec}}, \code{\link{aperm}}, \code{\link{array}}
 #' @examples
 #' 
 #' data(Titanic)

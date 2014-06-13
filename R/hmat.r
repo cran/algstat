@@ -1,6 +1,6 @@
-#' Construct a hierarchical model matrix
+#' Construct a Hierarchical Model Matrix
 #'
-#' Determine the A matrix associated with a hierarchical model on a contingency table
+#' Determine the A matrix associated with a hierarchical model on a contingency table.  In algebraic statistics, the A matrix of a log-linear model is the transpose of the design matrix of the (cell-means parameterized) ANOVA corresponding to the model.
 #' 
 #' @param varlvls a vector containing the number of levels of each variable
 #' @param facets the facets generating the hierarchical model, a list of vectors of variable indices
@@ -42,7 +42,7 @@ hmat <- function(varlvls, facets){
   
   # make colnames
   colNames <- apply(cellsDf, 1, paste, collapse = '')
-  totalCols <- length(colNames)
+  nCells <- length(colNames)
   
   # make rownames
   configsPerFacet <- sapply(facets, function(facet) prod(varlvls[facet]))
@@ -66,7 +66,7 @@ hmat <- function(varlvls, facets){
   
   
   # make A
-  A <- matrix(nrow = totalRows, ncol = totalCols, 
+  A <- matrix(nrow = totalRows, ncol = nCells, 
     dimnames = list(rowNames, colNames)
   )
 
@@ -81,9 +81,9 @@ hmat <- function(varlvls, facets){
   
   # convert to ints
   intA <- as.integer(A)
-  intA <- matrix(intA, nrow = nrow(A), ncol = ncol(A))
-  colnames(intA) <- colnames(A)
-  row.names(intA) <- row.names(A)
+  intA <- matrix(intA, nrow = nrow(A), ncol = ncol(A),
+    dimnames = list(rowNames, colNames)
+  )
 
   
   # return

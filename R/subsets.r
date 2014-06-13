@@ -1,12 +1,15 @@
-#' Compute the subsets of a given set
+#' Compute Subsets
 #'
-#' Compute the subsets of a given set
+#' Compute the subsets of a given set.
+#'
+#' Note that this algorithm is run in R: it is therefore not intended to be the most efficient algorithm for computins subsets.
 #' 
 #' @param set the original set
 #' @param sizes desired size(s) of subsets
 #' @param include_null should the empty vector be included?
 #' @return a list of subsets as vectors
 #' @export subsets
+#' @seealso \code{\link{combn}}
 #' @examples
 #' 
 #' 

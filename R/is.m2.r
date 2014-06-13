@@ -1,4 +1,4 @@
-#' Test whether an object is an m2 object.
+#' Macaulay2 Object Check
 #'
 #' Test whether an object is an m2 object.
 #'

@@ -1,6 +1,6 @@
-#' Solve a system of polynomial equations
+#' Solve a System of Polynomial Equations
 #'
-#' Solve a system of polynomial equations
+#' \code{polySolve} solves a system of polynomial equations, specifiable in any of several ways.
 #' 
 #' @param lhs a mpolyList or character vector of left hand sides
 #' @param rhs a mpolyList or character vector of right hand sides
@@ -8,6 +8,7 @@
 #' @param ... stuff to pass to bertini
 #' @return an object of class bertini
 #' @export polySolve
+#' @seealso \code{\link{variety}}, \code{\link{bertini}}
 #' @examples
 #' \dontrun{
 #' 

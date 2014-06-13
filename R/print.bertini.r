@@ -1,4 +1,4 @@
-#' Pretty printing of Bertini output.
+#' Pretty Printing of Bertini Output
 #'
 #' Pretty printing of Bertini output.
 #' 

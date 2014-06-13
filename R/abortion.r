@@ -1,6 +1,6 @@
-#' Haberman's abortion, education, and religion data
+#' Haberman's Abortion, Education, and Religion Data
 #' 
-#' Haberman's abortion, education, and religion data
+#' A multi-way contingency table with the results of a survey concerning attitudes concerning abortion.
 #'
 #' @name abortion
 #' @docType data

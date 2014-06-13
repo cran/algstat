@@ -1,6 +1,6 @@
-#' Evaluate Macaulay2 code
+#' Evaluate Macaulay2 Code
 #'
-#' Evaluate Macaulay2 code
+#' Write a Macaulay2 file, evaluate it through a back-end connection to Macaulay2, and bring the output back into R.
 #' 
 #' @param code Macaulay2 code as either a character string or function; see examples
 #' @param dir directory to place the files in
@@ -13,7 +13,7 @@
 #' options(digits = 20)
 #' 13^20
 #' m2("13^20") # correct answer
-#' m2("toRR(20,(19004963774880800571392-13^20)/13^20)")
+#' m2("toRR(20,(19004963774880800571392-13^20)/13^20)") # relative error
 #' options(digits = 7)
 #'
 #' code <- "
@@ -70,7 +70,11 @@ m2 <- function(code, dir = tempdir(), opts = "--script"){
 
   oldWd <- getwd()
   setwd(dir)
-  system(paste(getOption("m2Path"), opts, paste(dir, "m2Code.m2", sep = "/"))) 
+  system(paste(
+    file.path2(getOption("m2Path"), "M2"), 
+    opts, 
+    paste(dir, "m2Code.m2", sep = "/")
+  )) 
   setwd(oldWd)
   
   out <- readLines(paste(dir, "m2Out", sep = "/"))

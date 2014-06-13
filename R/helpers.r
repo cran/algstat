@@ -1,6 +1,6 @@
-#' Compute the Lp norm of a vector
+#' Lp Norm
 #'
-#' Compute the Lp norm of a vector
+#' Compute the Lp norm of a vector.
 #' 
 #' @param x x
 #' @param p p
@@ -42,9 +42,9 @@ lpnorm <- function(x, p = 2){
 
 
 
-#' Generate spectral data
+#' Random Spectral Data
 #'
-#' Generate spectral data
+#' Generate spectral data for testing purposes.
 #' 
 #' @param nVoters number of voters voting
 #' @param nObjects number of objects up for selection
@@ -66,10 +66,11 @@ rvotes <- function(nVoters, nObjects, kSelected){
 
 #' Create an upper triangular matrix
 #'
-#' Create an upper triangular matrix
+#' Create an upper triangular matrix.
 #' 
 #' @param x a vector
 #' @return ...
+#' @seealso \code{\link{lower}}
 #' @export upper
 #' @examples
 #' upper(1:3)
@@ -104,11 +105,12 @@ upper <- function(x){
 
 #' Create a lower triangular matrix
 #'
-#' Create a lower triangular matrix
+#' Create a lower triangular matrix.
 #' 
 #' @param x a vector
 #' @return ...
 #' @export lower
+#' @seealso \code{\link{upper}}
 #' @examples
 #' upper(1:3)
 #' lower(1:3)
@@ -129,14 +131,15 @@ lower <- function(x) t(upper(x))
 
 
 
-#' Project a vector onto the column space of a matrix
+#' Vector Projection onto col(A)
 #'
-#' Project a vector onto the column space of a matrix
+#' Project a vector onto the column space of a matrix.
 #' 
 #' @param A a matrix
 #' @param x a vector
 #' @return ...
 #' @export projectOnto
+#' @seealso \code{\link{qr.fitted}}
 #' @examples
 #' 
 #' A <- diag(5)[,1:2]
@@ -154,9 +157,9 @@ projectOnto <- function(A, x) qr.fitted(qr(A), x)
 
 
 
-#' Project a vector onto the orthogonal complement of the column space of a matrix
+#' Vector Projection onto the orthogonal complement of col(A)
 #'
-#' Project a vector onto the orthogonal complement of the column space of a matrix
+#' Project a vector onto the orthogonal complement of the column space of a matrix; the null space of A transpose
 #' 
 #' @param A a matrix
 #' @param x a vector
@@ -183,9 +186,9 @@ projectOntoPerp <- function(A, x) diag(length(x))%*%x - qr.fitted(qr(A), x)
 
 
 
-#' Multinomial coefficient
+#' Multinomial Coefficient
 #'
-#' Compute the multinomial coefficient
+#' Compute the multinomial coefficient.
 #'
 #' This function computes the multinomial coefficient by computing the factorial of each number on a log scale, differencing log(n!) - sum(log(x!)), and then exponentiating.  It then checks to see if this is an integer; if it's not, it issues a warning.
 #' 
@@ -205,4 +208,106 @@ mchoose <- function(n, x){
   out <- exp(lboth[1] - sum(lboth[-1]))
   if(out != round(out)) warning("log-retransformed multinomial coefficient != rounded value.")
   as.integer(round(out))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Ones Vector
+#'
+#' Make a column vector of ones.
+#' 
+#' @param n how many ones
+#' @return a column vector of ones as an integer matrix
+#' @export ones
+#' @examples
+#' 
+#' ones(5)
+#' str(ones(5))
+#' 
+#' 
+#' 
+#'
+ones <- function(n) matrix(rep(1L, n))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Iterated Kronecker product
+#'
+#' Compute the Kronecker product of several matrices.
+#'
+#' If kronecker is  the function that computes A x B, kprod computes A x B x C and so on; it's a wrapper of Reduce and kronecker.
+#' 
+#' @param ... a listing of matrices
+#' @return ... a matrix that is the kronecker product of those matrices (from left to right)
+#' @export kprod
+#' @examples
+#' 
+#' kprod(diag(2), t(ones(2)))
+#' kprod(t(ones(2)), diag(2))
+#'
+#' kprod(diag(2), t(ones(2)), t(ones(2)))
+#' kprod(t(ones(2)), diag(2), t(ones(2)))
+#' kprod(t(ones(2)), t(ones(2)), diag(2))
+#' 
+#' 
+#' rbind(
+#'   kprod(diag(2), t(ones(2))),
+#'   kprod(t(ones(2)), diag(2))
+#' )
+#' 
+#' 
+kprod <- function(...) Reduce(kronecker, list(...))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+file.path2 <- function(...){
+  dots <- list(...)
+  if(.Platform$OS.type == "unix"){
+    sep <- "/"
+  } else {
+    sep <- "\\"
+  }
+  paste0(dots, collapse = sep)
 }

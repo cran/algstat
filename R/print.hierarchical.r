@@ -1,4 +1,4 @@
-#' Pretty printing of hierarchical's output.
+#' Pretty Printing of Hierarchical's Output
 #'
 #' Pretty printing of hierarchical's output.
 #' 

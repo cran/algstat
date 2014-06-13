@@ -1,4 +1,4 @@
-#' Test whether an object is an bertini object.
+#' Bertini Object Check
 #'
 #' Test whether an object is an bertini object.
 #'

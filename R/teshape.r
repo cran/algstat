@@ -1,6 +1,6 @@
 #' Interconvert data structures
 #'
-#' Interconvert an array, a raw data frame, and frequency distribution data.frame
+#' Interconvert an array, a raw data frame, and frequency distribution data.frame.
 #'
 #' Multivariate categorical data can be represented in several ways.  Three comon ways are : a contingency table, a data frame of raw observations (1 row = 1 subject), and a long data frame with a variable containing the counts in the contingency table.
 #' 

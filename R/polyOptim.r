@@ -1,4 +1,4 @@
-#' Polynomial optimization
+#' Polynomial Optimization
 #'
 #' Find the collection of critical points of a multivariate polynomial unconstrained or constrained to an affine variety (algebraic set; solution set of multivariate polynomials).
 #' 

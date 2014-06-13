@@ -1,6 +1,6 @@
-#' Spectral
+#' Analyze a Rank Dataset
 #'
-#' Spectral
+#' \code{spectral} analyzes a rank dataset for order interactions; see examples for details.  
 #' 
 #' @param data a vector in the frequency format (see examples)
 #' @param n the number of objects to select from

@@ -1,8 +1,6 @@
-#' Compute a Markov basis with 4ti2
+#' Compute a Markov Basis with 4ti2
 #'
-#' Compute a Markov basis with 4ti2
-#'
-#' A Markov basis of a matrix is computed with the markov function of 4ti2, obtained with the latte-integrale bundle.
+#' A Markov basis of a matrix A is computed with the markov function of 4ti2, obtained with the LattE-integrale bundle.
 #' 
 #' @param mat a matrix; for example the output of hmat
 #' @param format how the moves should be returned (if "mat", moves are columns)
@@ -110,7 +108,7 @@
 #'
 #' }
 #' 
-markov <- function(mat, format = c("mat", "vec", "tab"), dim,
+markov <- function(mat, format = c("mat", "vec", "tab"), dim = NULL,
   all = FALSE, dir = tempdir(), opts = "-parb", quiet = TRUE,
   dbName
 ){
@@ -127,28 +125,32 @@ markov <- function(mat, format = c("mat", "vec", "tab"), dim,
 	
   ## make dir to put 4ti2 files in (within the tempdir) timestamped
   timeStamp <- as.character(Sys.time())
-  timeStamp <- str_replace_all(timeStamp, "-", "_")
-  timeStamp <- str_replace_all(timeStamp, " ", "_")  
-  timeStamp <- str_replace_all(timeStamp, ":", "_")  
-  dir2 <- paste(dir, timeStamp, sep = "/")
+  timeStamp <- chartr("-", "_", timeStamp)
+  timeStamp <- chartr(" ", "_", timeStamp)
+  timeStamp <- chartr(":", "_", timeStamp)
+  dir2 <- file.path2(dir, timeStamp)
   suppressWarnings(dir.create(dir2))
 	
   
   ## define a function to write the code to a file
-  formatAndWriteMatrix <- function(mat, codeFile = "markovCode.mat"){
-
+  formatAndWriteFile <- function(mat, codeFile = "markovCode.mat"){
+    
+    # line numbers up, e.g. 1 1 0 0
     out <- paste(nrow(mat), ncol(mat))
     out <- paste0(out, "\n")
-    out <- paste0(out, paste(apply(unname(mat), 1, paste, collapse = " "), collapse = "\n"))    
+    out <- paste0(out, 
+      paste(apply(unname(mat), 1, paste, collapse = " "), 
+      collapse = "\n")
+    )    
   
     # write code file
-    writeLines(out, con = paste(dir2, codeFile, sep = "/"))
+    writeLines(out, con = file.path2(dir2, codeFile))
     invisible(out)
   }	
   
   
   ## make 4ti2 file
-  if(!missing(mat)) formatAndWriteMatrix(mat)
+  if(!missing(mat)) formatAndWriteFile(mat)
 
 
   ## switch to temporary directory
@@ -156,19 +158,35 @@ markov <- function(mat, format = c("mat", "vec", "tab"), dim,
   setwd(dir2)
   
   
+  ## create/retrieve markov basis
   if(missing(dbName)){
-    ## run 4ti2, if requested
-    outPrint <- capture.output(system(
-      paste(
-        paste(getOption("lattePath"), "markov", sep = "/"), 
-        opts, 
-        paste(dir2, "markovCode.mat", sep = "/")
-      ),
-      intern = TRUE, ignore.stderr = TRUE
-    ))
-
+  	
+    ## run 4ti2 if needed
+    if(.Platform$OS.type == "unix"){    	
+      outPrint <- capture.output(system(
+        paste(
+          file.path2(getOption("markovPath"), "markov"), 
+          opts, 
+          file.path2(dir2, "markovCode.mat")
+        ),
+        intern = TRUE, ignore.stderr = TRUE
+      ))      
+    } else { # windows    	
+      matFile <- file.path2(dir2, "markovCode.mat")
+      matFile <- chartr("\\", "/", matFile)
+      matFile <- str_c("/cygdrive/c", str_sub(matFile, 3))
+      outPrint <- capture.output(system(
+        paste(
+          paste0("cmd.exe /c env.exe"),
+          file.path(getOption("markovPath"), "markov"), 
+          opts, 
+          matFile
+        ),
+        intern = TRUE, ignore.stderr = TRUE
+      ))      
+    }
   
-    ## print 4ti2 output, if requested
+    ## print 4ti2 output when quiet = FALSE
     if(!quiet){
   	  # cut off line numbers
       sval <- str_locate(outPrint[1], '"')[1]
@@ -185,11 +203,11 @@ markov <- function(mat, format = c("mat", "vec", "tab"), dim,
       cat(outPrint, sep = "\n")
     }
     
-  } else { # model name is specified
+  } else { # if the model name is specified
   	
     download.file(
-      paste0("http://markov-bases.de/data", "/", dbName, "/", dbName, ".mar"),
-      destfile = "markovCode.mat.mar"
+      paste0("http://markov-bases.de/data/", dbName, "/", dbName, ".mar"),
+      destfile = "markovCode.mat.mar" # already in tempdir
     )
     
   }

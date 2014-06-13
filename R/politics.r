@@ -1,6 +1,6 @@
-#' Politics by personality
+#' Politics by Personality
 #' 
-#' Politics by personality
+#' A 2-by-2 contingency table comparing political identification and personality.
 #'
 #' @name politics
 #' @docType data

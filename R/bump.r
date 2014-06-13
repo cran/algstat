@@ -1,4 +1,4 @@
-#' Convert dimensions of approval data
+#' Convert Dimensions of Approval Data
 #'
 #' Convert dimensions of approval data, see details for more.
 #'

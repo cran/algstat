@@ -1,6 +1,6 @@
-#' Handedness data
+#' Handedness Data
 #' 
-#' A small fictional dataset on handedness
+#' A small fictional dataset on handedness.
 #'
 #' @name handy
 #' @docType data

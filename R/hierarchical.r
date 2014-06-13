@@ -1,4 +1,4 @@
-#' Hierarchical model
+#' Fitting Hierarchical Log-linear Models with Algebraic Methods
 #'
 #' Run the Metropolis-Hastings algorithm using a Markov basis computed with 4ti2 to sample from the conditional distribution of the data given the sufficient statistics of a hierarchical model.
 #'
@@ -12,8 +12,8 @@
 #'
 #' Since the tests make use of Monte Carlo sampling, standard errors (SE) are reported for each statistic.  For the test statistics, this is just the standard deviation of the samples divided by the square root of the sample size, iter; they are computed and returned by the print method.  The standard errors of the p values use the CLT asymptotic approximation and, therefore, warrant greater consideration when the p value is close to 0 or 1.  
 #' 
-#' @param formula formula for the loglinear model
-#' @param data data
+#' @param formula formula for the hierarchical log-linear model
+#' @param data data, typically as a table but can be in different formats.  see \code{\link{teshape}}
 #' @param iter number of chain iterations
 #' @param burn burn-in
 #' @param thin thinning
@@ -245,7 +245,7 @@
 #' ############################################################
 #' 
 #' data(HairEyeColor)
-#' eyeHairColor <- t(apply(HairEyeColor, 1:2, sum))
+#' eyeHairColor <- margin.table(HairEyeColor, 2:1)
 #' 
 #' outC <- hierarchical(~ Eye + Hair, data = eyeHairColor)
 #' outR <- hierarchical(~ Eye + Hair, data = eyeHairColor, engine = "R")
@@ -482,13 +482,13 @@ hierarchical <- function(formula, data, iter = 1E4, burn = 1000, thin = 10,
   ##################################################
   
   data <- suppressMessages(teshape(data, "tab"))
-  varsNlevels <- attr(data, "dimnames")  
+  varsNlevels <- dimnames(data)  
   p <- length(varsNlevels)
   
   
   ## check for sampling zeros
   ##################################################
-  if(any(data == 0L)) message("care ought be taken with tables with sampling zeros to ensure the MLE exists.", appendLF = FALSE)
+  if(any(data == 0L)) message("care ought be taken with tables with sampling zeros to ensure the MLE exists.")
 
 
   ## parse formula for vector of r_k's
@@ -606,7 +606,7 @@ hierarchical <- function(formula, data, iter = 1E4, burn = 1000, thin = 10,
   dimModel <- nParamsInModel - 1 # the - 1 accounts for the overall mean
   overallAsymptoticDegFreedom <- (dimSatModel - dimModel)
   
-  
+
   # compute the parameters  
   log_fit <- exp
   log_fit[exp > 0] <- log(exp[exp > 0])  
@@ -621,6 +621,14 @@ hierarchical <- function(formula, data, iter = 1E4, burn = 1000, thin = 10,
       log_fit <- sweep(log_fit, termsInModel[[k]], param[[k]])
     }
   }
+  # for every step, fit mle
+  # then decompose mle
+  # problem : they all have the same marginals, so the same
+  # mles!
+  # idea 1 : sample from the multinomial with the same sample
+  # size (so different marginals), estimate, then decompose
+  # idea 2 : bootstrap sample from the table, estimate, decompose
+  # i think i like idea 2 better.
   
 
   # reorder the param estimates in the order of subsets

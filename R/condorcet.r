@@ -1,4 +1,4 @@
-#' Find a Condorcet choice.
+#' Find a Condorcet Choice.
 #'
 #' Try to compute find a Condorcet choice given a full ranking of m objects.
 #'

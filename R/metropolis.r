@@ -1,4 +1,4 @@
-#' Run a Markov basis Metropolis-Hastings algorithm
+#' Markov Basis Metropolis-Hastings Algorithm
 #'
 #' Given a starting table (as a vector) and a loglinear model matrix A, compute the Markov basis of A with 4ti2 and then run the Metropolis-Hastings algorithm starting with the starting table.  
 #'

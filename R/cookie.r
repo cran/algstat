@@ -1,6 +1,6 @@
-#' Girl Scout cookie preferences
+#' Girl Scout Cookie Preferences
 #' 
-#' A small approval dataset on Girl Scout cookies
+#' A small approval dataset on Girl Scout cookies.
 #'
 #' @name cookie
 #' @docType data
