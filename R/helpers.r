@@ -311,3 +311,15 @@ file.path2 <- function(...){
   }
   paste0(dots, collapse = sep)
 }
+
+
+
+
+
+
+
+
+
+is.mac <- function() grepl("darwin", R.version$platform)
+is.win <- function() .Platform$OS.type == 'windows'
+is.unix <- function() .Platform$OS.type == "unix"

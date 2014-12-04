@@ -38,6 +38,7 @@
 #' countTables(eyeHairColor, quiet = FALSE)
 #' 
 #'
+#'
 #' }
 #' 
 countTables <- function(table, 

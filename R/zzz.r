@@ -1,12 +1,11 @@
 .onAttach <- function(...) {
   
-  if(.Platform$pkgType == 'mac.binary'){ ## find the path on a mac	
+  if(is.mac()){ ## find the path on a mac	
   	
     apps <- system('ls /Applications/', intern = TRUE)
     lowerCaseApps <- tolower(apps)
     home <- system('ls ~/', intern = TRUE)
     lowerHome <- tolower(home)
-    
     
     # find Macaulay2
     ndxApps  <- which(str_detect(lowerCaseApps, 'macaulay2'))
@@ -81,7 +80,7 @@
     
     
     
-  } else if(.Platform$OS.type == 'windows'){ ## find the path on a pc  	
+  } else if(is.win()){ ## find the path on a pc  	
   	
   	if(!any(str_detect(tolower(list.files("C:\\")), "cygwin"))){
   	  packageStartupMessage("Cygwin is required to run most of algstat on a Windows platform.")
@@ -90,7 +89,26 @@
   	}
   	
     options(m2Path = NULL)
-    x <- system('cmd.exe /c whereis.exe m2', TRUE)
+  	options(bertiniPath = NULL)
+  	options(lattePath = NULL)  
+  	options(markovPath = NULL)
+    
+    if(!whereis_is_accessible()){ # check for whereis, return if not found
+      packageStartupMessage(paste(
+        'whereis not found. ',
+        'Try setting the paths with setM2Path(), setBertiniPath(), setLattePath(),',
+        'and setMarkovPath().'
+      ))
+      return()
+    }
+    
+    whereis <- function(s){ 
+      wexe <- unname(Sys.which("whereis"))
+      x <- system(paste(wexe, s), TRUE)
+      str_sub(x, nchar(s)+2)
+    }
+    
+    x <- whereis("m2")
     if(str_detect(x, '/')){
       options(m2Path = dirname(x))
     } else {
@@ -100,8 +118,8 @@
       ))
     }   
     
-    options(bertiniPath = NULL)
-    x <- system('cmd.exe /c whereis.exe bertini', TRUE)
+    
+  	x <- whereis("bertini")
     if(str_detect(x, '/')){
       options(bertiniPath = dirname(x))
     } else {
@@ -111,8 +129,7 @@
       ))
     }
     
-    options(lattePath = NULL)
-    x <- system('cmd.exe /c whereis.exe count', TRUE)
+  	x <- whereis("count")
     if(str_detect(x, '/')){
       options(lattePath = dirname(x))
     } else {
@@ -122,8 +139,8 @@
       ))
     }
     
-    options(markovPath = NULL)
-    x <- system('cmd.exe /c whereis.exe markov', TRUE)
+
+  	x <- whereis("markov")
     if(str_detect(x, '/')){
       options(markovPath = dirname(x))
     } else {
@@ -141,20 +158,20 @@
     
     
     
-    
-  } else {  ## find the path on a linux  	
+  } else {  ## find the path on a unix-type machine
+    # note that this is done after os-x with an else
   	
     options(m2Path = NULL)
-    packageStartupMessage('Macaulay2 not found.  Set the location with setM2Path().')    
+    packageStartupMessage('Set Macaulay2 path with setM2Path().')    
 
     options(bertiniPath = NULL)
-    packageStartupMessage('Bertini not found.  Set the location with setBertiniPath().')        
+    packageStartupMessage('Set Bertini path with setBertiniPath().')        
     
     options(lattePath = NULL)
-    packageStartupMessage('LattE-integrale not found.  Set the location with setLattePath().')            
+    packageStartupMessage('Set LattE-integrale path with setLattePath().')            
     
     options(markovPath = NULL)
-    packageStartupMessage('4ti2 not found.  Set the location with setMarkovPath().')                    
+    packageStartupMessage('Set 4ti2 path with setMarkovPath().')                    
     
   }
   
@@ -327,6 +344,10 @@ check_for_4ti2 <- function(){
 
 
 
+
+
+
+whereis_is_accessible <- function() unname(Sys.which("whereis")) != ""
 
 
 

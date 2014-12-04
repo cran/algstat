@@ -45,13 +45,20 @@
 #'
 m2 <- function(code, dir = tempdir(), opts = "--script"){
 	
+  
+  ## define function to make the m2 file to be run later
   write_m2 <- function(code, outFile = "m2Out", codeFile = "m2Code.m2"){
-
     # pull code from function body
     if(is.function(code)) code <- as.character(body(code))[-1]
     if(is.character(code)){
+      
+      # add new line to top, if not present
       if(str_sub(code, 1, 1) != "\n") code <- paste("\n", code, sep = "")
+      
+      # add new line to end, if not present
       if(str_sub(code, -1, -1) != "\n") code <- paste(code, "\n", sep = "")      
+      
+      # break up code into lines (a character vector)
       code <- strsplit(code, "\\n")[[1]][-1]
     }
 
@@ -66,17 +73,24 @@ m2 <- function(code, dir = tempdir(), opts = "--script"){
     invisible(code)
   }	
 
+  
+  ## write m2 code
   write_m2(code)
 
+  
+  ## switch directories, run m2 script, come back
   oldWd <- getwd()
   setwd(dir)
-  system(paste(
+    
+  system2(
     file.path2(getOption("m2Path"), "M2"), 
-    opts, 
-    paste(dir, "m2Code.m2", sep = "/")
-  )) 
+    paste(opts, paste(dir, "m2Code.m2", sep = "/"))
+  )   
+    
   setwd(oldWd)
   
+  
+  ## report to user
   out <- readLines(paste(dir, "m2Out", sep = "/"))
   class(out) <- "m2"
   

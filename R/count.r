@@ -32,8 +32,18 @@
 #' # ehrhart polynomials
 #' count(spec, opts = "--ehrhart-polynomial")
 #' count(spec, opts = "--ehrhart-polynomial", mpoly = FALSE)
-#  count(spec, opts = "--ehrhart-series")
-#  count(spec, opts = "--ehrhart-taylor-3")
+#' 
+#' # ehrhart series (raw since mpoly can't handle rational functions)
+#' count(spec, opts = "--ehrhart-series")
+#' 
+#' # simplified ehrhart series - not yet implemented
+#' #count(spec, opts = "--simplified-ehrhart-polynomial")
+#' 
+#' # first 3 terms of the ehrhart series
+#' count(spec, opts = "--ehrhart-taylor=3")
+#' 
+#' # multivariate generating function
+#' count(spec, opts = "--multivariate-generating-function")
 #' 
 #' 
 #' # the number of tables with the same marginals
@@ -77,8 +87,8 @@ count <- function(spec, dir = tempdir(), opts = "",
   
   ## look at opts
   if(opts == "--ehrhart-series" && mpoly){
-    stop("this option is not yet supported by algstat.", 
-      call. = FALSE)  	
+    #stop("this option is not yet supported by algstat.", 
+    #  call. = FALSE)  	
     message("mpoly can't handle rational functions; reverting to raw output.")
     mpoly <- FALSE
   }
@@ -88,10 +98,7 @@ count <- function(spec, dir = tempdir(), opts = "",
       call. = FALSE)
   }
   
-  if(str_detect(opts, "--ehrhart-taylor")){
-    stop("this option is not yet supported by algstat.", 
-      call. = FALSE)
-  }  
+  
   
     
     
@@ -224,69 +231,95 @@ count <- function(spec, dir = tempdir(), opts = "",
   
   
   ## run count
-  if(.Platform$OS.type == "unix"){    	
-    outPrint <- capture.output(system(
-      paste(
-        file.path2(getOption("lattePath"), "count"), 
-        opts, 
-        file.path2(dir2, "countCode.latte")
-      ),
-      intern = TRUE, ignore.stderr = TRUE
-    ))      
+  if(is.unix()){ 
+    
+    system2(
+      file.path2(getOption("lattePath"), "count"),
+      paste(opts, file.path2(dir2, "countCode.latte")),
+      stdout = "countOut", stderr = "countErr"
+    )       
+    
   } else { # windows    	
+    
     matFile <- file.path2(dir2, "countCode.latte")
     matFile <- chartr("\\", "/", matFile)
-    matFile <- str_c("/cygdrive/c", str_sub(matFile, 3))
-    outPrint <- capture.output(system(
+    matFile <- str_c("/cygdrive/c", str_sub(matFile, 3))  
+
+    system2(
+      "cmd.exe",
       paste(
-        paste0("cmd.exe /c env.exe"),
+        "/c env.exe", 
         file.path(getOption("lattePath"), "count"), 
-        opts, 
-        matFile
-      ),
-      intern = TRUE, ignore.stderr = TRUE
-    ))      
+        opts, matFile
+      ), stdout = "countOut", stderr = "countErr"
+    )
+    
   }
+  
 
   ## print count output when quiet = FALSE
-  if(!quiet || opts == "--ehrhart-polynomial" ||
-    opts == "--ehrhart-series" ||
-    str_detect(opts, "--ehrhart-taylor")
-  ){
-
-    # cut off line numbers
-    sval <- str_locate(outPrint[1], '"')[1]
-    outPrint <- str_sub(outPrint, start = sval + 1)
+  if(!quiet) message(paste(readLines("countErr"), collapse = "\n"), appendLF = TRUE)
+  if(!quiet) cat(readLines("countOut"), sep = "\n")
   
-    # remove quotes
-    outPrint <- str_replace_all(outPrint, '"', "")
   
-    # replace tabs (best i can do)
-    outPrint <- str_replace_all(outPrint, "\\\\t", "\t")
-    outPrint <- str_replace_all(outPrint, "\\\\r", "\n")    
-  
-    # print
-    if(!quiet) cat(outPrint, sep = "\n")
-    
-    if(opts == "--ehrhart-polynomial"){
-      out <- rev(outPrint)[2]
-      if(!mpoly) return(str_trim(out))      
-      out <- str_replace_all(out, " \\* ", " ")
-      if(str_sub(out, 1, 5) == " + 1 ") out <- str_sub(out, 6)
-      return(mp(str_trim(out)))
-    }
-
-    # these are broken...
-    if(opts == "--ehrhart-series") return(rev(outPrint)[2])
-      
-    if(str_detect(opts, "--ehrhart-taylor")) 
-      return(rev(outPrint)[2])
-        
+  ## parse ehrhart polynomial
+  if(opts == "--ehrhart-polynomial"){
+    outPrint <- readLines("countOut")
+    rawPoly <- rev(outPrint)[2]
+    if(!mpoly) return(str_trim(rawPoly))      
+    rawPoly <- str_replace_all(rawPoly, " \\* ", " ")
+    if(str_sub(rawPoly, 1, 5) == " + 1 ") rawPoly <- str_sub(rawPoly, 6)
+    return(mp(str_trim(rawPoly)))
   }
-
   
   
-  ## figure out what files to keep them, and make 4ti2 object
+  ## parse ehrhart series
+  if(opts == "--ehrhart-series"){
+    outPrint <- readLines("countCode.latte.rat")
+    
+    # take off initial "x := " and terminating ":"
+    outPrint <- str_sub(outPrint, start = 6, end = nchar(outPrint)-1)
+    
+    # return
+    return(outPrint)
+  }
+  
+  
+  ## parse multivariate generating function
+  if(opts == "--multivariate-generating-function"){
+    outPrint <- readLines("countCode.latte.rat")
+    
+    # collapse
+    outPrint <- paste(outPrint, collapse = "")
+    
+    # return
+    if(!mpoly) return(outPrint)
+    
+    # change x[0] to vars[1], and so on
+    indets <- vars(spec)
+    for(k in 1:length(indets)){
+      outPrint <- str_replace_all(outPrint, paste0("x\\[",k-1,"\\]"), indets[k])
+    }
+    return(outPrint)
+  }  
+  
+  
+  ## parse truncated taylor series
+  if(str_detect(opts, "--ehrhart-taylor=")){
+    outPrint <- readLines("countOut")
+    
+    # collapse
+    outPrint <- paste(outPrint, collapse = " + ")
+    outPrint <- str_replace_all(outPrint, "t", " t")
+    
+    # return
+    if(!mpoly) return(outPrint)
+    return(mp(outPrint))
+  }  
+  
+  
+  
+  ## read in integer and parse if small enough
   out <- readLines("numOfLatticePoints")
   if(nchar(out) < 10) out <- as.integer(out)
   

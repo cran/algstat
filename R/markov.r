@@ -162,46 +162,33 @@ markov <- function(mat, format = c("mat", "vec", "tab"), dim = NULL,
   if(missing(dbName)){
   	
     ## run 4ti2 if needed
-    if(.Platform$OS.type == "unix"){    	
-      outPrint <- capture.output(system(
-        paste(
-          file.path2(getOption("markovPath"), "markov"), 
-          opts, 
-          file.path2(dir2, "markovCode.mat")
-        ),
-        intern = TRUE, ignore.stderr = TRUE
-      ))      
-    } else { # windows    	
+    if(.Platform$OS.type == "unix"){
+      
+      system2(
+        file.path2(getOption("markovPath"), "markov"),
+        paste(opts, file.path2(dir2, "markovCode.mat")),
+        stdout = "markovOut", stderr = FALSE
+      )
+      
+    } else { # windows 
+      
       matFile <- file.path2(dir2, "markovCode.mat")
       matFile <- chartr("\\", "/", matFile)
-      matFile <- str_c("/cygdrive/c", str_sub(matFile, 3))
-      outPrint <- capture.output(system(
+      matFile <- str_c("/cygdrive/c", str_sub(matFile, 3)) 
+      
+      system2(
+        "cmd.exe",
         paste(
-          paste0("cmd.exe /c env.exe"),
+          "/c env.exe", 
           file.path(getOption("markovPath"), "markov"), 
-          opts, 
-          matFile
-        ),
-        intern = TRUE, ignore.stderr = TRUE
-      ))      
+          opts, matFile
+        ), stdout = "markovOut", stderr = FALSE
+      )
+      
     }
-  
-    ## print 4ti2 output when quiet = FALSE
-    if(!quiet){
-  	  # cut off line numbers
-      sval <- str_locate(outPrint[1], '"')[1]
-      outPrint <- str_sub(outPrint, start = sval + 1)
+
     
-      # remove quotes
-      outPrint <- str_replace_all(outPrint, '"', "")
-    
-      # replace tabs (best i can do)
-      outPrint <- str_replace_all(outPrint, "\\\\t", "\t")
-      outPrint <- str_replace_all(outPrint, "\\\\r", "\n")    
-    
-      # print
-      cat(outPrint, sep = "\n")
-    }
+    if(!quiet) cat(readLines("markovOut"), sep = "\n")
     
   } else { # if the model name is specified
   	

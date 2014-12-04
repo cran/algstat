@@ -92,32 +92,6 @@
 #' # bertini(code, quiet = FALSE) # print broken here
 #' 
 #'
-#' 
-#'
-#' 
-#'
-#' 
-#'
-#'
-#' 
-#'
-#' 
-#'
-#' 
-#'
-#'
-#' 
-#'
-#' 
-#'
-#' 
-#' 
-#'
-#' 
-#'
-#' 
-#'
-#' 
 #'
 #'
 #' 
@@ -169,31 +143,18 @@ bertini <- function(code, dir = tempdir(), opts = "", quiet = TRUE){
   ## switch to temporary directory, run bertini
   oldWd <- getwd()
   setwd(dir2)
-  outPrint <- capture.output(system(
-    paste(
-      paste(getOption("bertiniPath"), "bertini", sep = "/"), 
-      opts, 
-      paste(dir2, "bertiniCode", sep = "/")
-    ),
-    intern = TRUE
-  ))
+  
+  
+  ## run bertini  
+  system2(
+    paste(getOption("bertiniPath"), "bertini", sep = "/"),
+    paste(opts, paste(dir2, "bertiniCode", sep = "/")),
+    stdout = "bertiniOut"
+  )
 
   
   ## print bertini output, if requested
-  if(!quiet){
-  	# cut off line numbers
-    sval <- str_locate(outPrint[1], '"')[1]
-    outPrint <- str_sub(outPrint, start = sval + 1)
-    
-    # remove quotes
-    outPrint <- str_replace_all(outPrint, '"', "")
-    
-    # replace tabs (best i can do)
-    outPrint <- str_replace_all(outPrint, "\\\\t", "\t")
-    
-    # print
-    cat(outPrint, sep = "\n")
-  }
+  if(!quiet) cat(readLines("bertiniOut"), sep = "\n")
   
   
   ## figure out what files to keep them, and make bertini object
